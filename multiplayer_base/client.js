@@ -7,7 +7,7 @@ var Client = IgeClass.extend({
 
 		// Load our textures
 		var self = this;
-
+		
 		// Enable networking
 		ige.addComponent(IgeNetIoComponent);
 		
@@ -20,7 +20,8 @@ var Client = IgeClass.extend({
 		// Load the textures we want to use
 		this.textures = {
 			ship: new IgeTexture('./assets/PlayerTexture.js'),
-			player: new IgeTexture('./assets/character.png')
+			sprite: new IgeTexture('./assets/character.png'),
+			projectile: new IgeTexture('./assets/ProjectileTexture.js')
 		};
 
 		ige.on('texturesLoaded', function () {

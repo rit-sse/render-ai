@@ -27,6 +27,7 @@ var ServerNetworkEvents = {
 		if (!ige.server.players[clientId]) {
 			ige.server.players[clientId] = new Player(clientId)
 				.streamMode(1)
+				// .addBehaviour('mouseAim', MouseAim)
 				.mount(ige.server.scene1);
 
 			// Tell the client to track their player entity
@@ -64,6 +65,10 @@ var ServerNetworkEvents = {
 
 	_onPlayerDownUp: function (data, clientId) {
 		ige.server.players[clientId].controls.down = false;
+	},
+	
+	_setMousePos: function (data, clientId) {
+		ige.server.players[clientId].mousePos = data;
 	}
 };
 

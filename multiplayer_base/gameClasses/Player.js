@@ -7,8 +7,10 @@ var Player = IgeEntity.extend({
 		var self = this;
 		
 		this.drawBounds(false);
-
+		
 		this.playerSpeed = 0.5;
+		
+		this.mousePos = ige._currentViewport.mousePos();
 		
 		this.controls = {
 			left: false,
@@ -24,7 +26,8 @@ var Player = IgeEntity.extend({
 		if (ige.isClient) {
 			self.texture(ige.client.textures.ship)
 			.width(20)
-			.height(20);
+			.height(20)
+			// .addBehaviour('mouseAim', MouseAim);
 		}
 		
 		// Define the data sections that will be included in the stream
@@ -67,6 +70,7 @@ var Player = IgeEntity.extend({
 	 * @param ctx The canvas context to render to.
 	 */
 	tick: function (ctx) {
+		
 		move_player(this);
 		
 		// Call the IgeEntity (super-class) tick() method
@@ -76,11 +80,16 @@ var Player = IgeEntity.extend({
 });
 
 function move_player(self) {
+	
+	// Server side movement calculations
 	if (ige.isServer) {
-
+		
+		// Look at mouse position
+		self.rotateToPoint(self.mousePos);
+		
 		var x_move = 0;
 		var y_move = 0;
-
+		
 		if (self.controls.left) {
 			x_move += -self.playerSpeed;
 		}
@@ -88,21 +97,26 @@ function move_player(self) {
 		if (self.controls.right) {
 			x_move += self.playerSpeed;
 		}
-
+		
 		if (self.controls.up) {
 			y_move += -self.playerSpeed;
 		}
-
+		
 		if (self.controls.down) {
 			y_move += self.playerSpeed;
 		}
-
+		
 		self.velocity.x(x_move);
 		self.velocity.y(y_move);
 	}
 
-	// Move Left
+	// Client side information gathering
 	if (ige.isClient) {
+		
+		// Record mouse position
+		ige.network.send('playerMousePos', ige._currentViewport.mousePos());
+		
+		// Move Left
 		if (ige.input.actionState('left')) {
 			if (!self.controls.left) {
 				// Record the new state
@@ -158,7 +172,7 @@ function move_player(self) {
 				ige.network.send('playerControlUpUp');
 			}
 		}
-
+		
 		// Move Down
 		if (ige.input.actionState('down')) {
 			if (!self.controls.down) {

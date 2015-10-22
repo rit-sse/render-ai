@@ -30,9 +30,4 @@ rotation, scale etc) is updated all clients are informed. The engine supports mu
 streaming data to clients but this is the simplest way to handle it. A single method call is all that is required
 to get the server-side simulation to send sync data to clients :)
 
-You can find out much more about the network stream system here: 
-http://www.isogenicengine.com/documentation/isogenic-game-engine/versions/1-1-0/manual/networking-multiplayer/realtime-network-streaming/
-
-(Separate info from above):
-To run the game, make sure you have the Isogenic Engine code directory in the same directory as this one. 
-Go into the multiplayer_base folder and run the .bat file.  Once the server is running, open the index.html file to play it.
+You can find out much more about the network stream system here: http://www.isogenicengine.com/documentation/isogenic-game-engine/versions/1-1-0/manual/networking-multiplayer/realtime-network-streaming/
