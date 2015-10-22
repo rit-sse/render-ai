@@ -26,5 +26,5 @@ The goal like always will be for everyone on the server to join forces to beat t
 If they complete it in a given amount of Twitch time all players playing will be awarded cool in game prizes.
 
 To run the game, make sure you have the Isogenic Engine in a file one below this one.
-To run the server, click run.bat. 
+To run the server: type "npm start" in the command prompt or click "start_server.bat".
 Once the server is running, open the index.html file in a browser to play it.

@@ -1,0 +1,12 @@
+{
+  "name": "render-ai",
+  "version": "1.0.0",
+  "description": "2d boss slaying",
+  "main": "server.js",
+  "scripts": {
+    "start": "Node ../ige/server/ige -g ."
+  },
+  "author": "rit-sse",
+  "dependencies": {
+  }
+}
