@@ -50,10 +50,11 @@ var Client = IgeClass.extend({
 						
 						self.mainScene = new IgeScene2d()
 							.id('mainScene');
-						
+							
 						// Create the scene
 						self.scene1 = new IgeScene2d()
 							.id('scene1')
+							.backgroundPattern(new IgeTexture('./assets/tile.png'), 'repeat', false, false)
 							.mount(self.mainScene);
 
 						self.uiScene = new IgeScene2d()
@@ -76,6 +77,7 @@ var Client = IgeClass.extend({
 						ige.input.mapAction('right', ige.input.key.d);
 						ige.input.mapAction('up', ige.input.key.w);
 						ige.input.mapAction('down', ige.input.key.s);
+						ige.input.mapAction('shoot', ige.input.key.space)
 
 						// Ask the server to create an entity for us
 						ige.network.send('playerEntity');
