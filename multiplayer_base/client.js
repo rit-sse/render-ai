@@ -71,10 +71,10 @@ var Client = IgeClass.extend({
 							.mount(ige);
 
 						// Define our player controls
-						ige.input.mapAction('left', ige.input.key.left);
-						ige.input.mapAction('right', ige.input.key.right);
-						ige.input.mapAction('up', ige.input.key.up);
-						ige.input.mapAction('down', ige.input.key.down);
+						ige.input.mapAction('left', ige.input.key.a);
+						ige.input.mapAction('right', ige.input.key.d);
+						ige.input.mapAction('up', ige.input.key.w);
+						ige.input.mapAction('down', ige.input.key.s);
 
 						// Ask the server to create an entity for us
 						ige.network.send('playerEntity');
