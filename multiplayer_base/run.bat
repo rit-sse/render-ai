@@ -1,2 +1,2 @@
-Node ../../ige/server/ige -g .
+Node ../ige/server/ige -g .
 @pause
