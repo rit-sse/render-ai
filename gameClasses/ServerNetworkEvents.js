@@ -20,6 +20,15 @@ var ServerNetworkEvents = {
 			// Remove the reference to the player entity
 			// so that we don't leak memory
 			delete ige.server.players[clientId];
+			
+			// Print the number of online players
+			var playercount= 0;
+			
+			for (var player in ige.server.players) {
+				playercount++;
+			}
+			
+			ige.server.log(playercount + " players online");
 		}
 	},
 
@@ -31,6 +40,15 @@ var ServerNetworkEvents = {
 				
 			// Tell the client to track their player entity
 			ige.network.send('playerEntity', ige.server.players[clientId].id(), clientId);
+			
+			// Print the number of online players
+			var playercount= 0;
+			
+			for (var player in ige.server.players) {
+				playercount++;
+			}
+			
+			ige.server.log(playercount + " players online");
 		}
 	},
 

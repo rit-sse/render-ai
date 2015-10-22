@@ -25,6 +25,6 @@ The game shall support twitch integration, where at random times a month the sit
 The goal like always will be for everyone on the server to join forces to beat the boss. 
 If they complete it in a given amount of Twitch time all players playing will be awarded cool in game prizes.
 
-To run the game, make sure you have the Isogenic Engine code directory in this directory. The .gitignore is accounting for the ige folder.
-Go into the multiplayer_base folder and run the .bat file.  
+To run the game, make sure you have the Isogenic Engine in a file one below this one.
+To run the server, click run.bat. 
 Once the server is running, open the index.html file in a browser to play it.
