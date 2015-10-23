@@ -11,7 +11,7 @@ var Player = IgeEntity.extend({
 		this.drawBounds(false);
 		
 		this.playerSpeed = 0.5;
-		this.fireCoolDown = 1;
+		this.fireCoolDown = 1 * 1000;
 		
 		this.elapsedTime = 0;
 		
@@ -209,6 +209,7 @@ function fire_projectile(self) {
 	if (ige.isServer) {
 		if (self.states.hasFired) {
 			ige.server._onProjectileEntity(self.mousePos, self.clientId);
+			self.states.hasFired = false;
 		}
 	}
 	
@@ -220,6 +221,14 @@ function fire_projectile(self) {
 	
 				// Tell the server about our state change
 				ige.network.send('playerStateHasFired');
+				
+				// var a = new IgeTimeout(function () {
+				// 	 // Record the new state
+				// 	 self.states.hasFired = false;
+					 
+				// 	 // Tell the server about our control change
+				// 	 ige.network.send('playerStateCanFire');
+				// 	 }, self.fireCoolDown);
 			}
 		} else {
 			if (self.states.hasFired ) {//&& (self.elapsedTime > self.fireCoolDown)) {

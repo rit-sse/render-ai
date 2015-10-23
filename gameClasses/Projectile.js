@@ -15,6 +15,7 @@ var Projectile = IgeEntity.extend({
 
         this.mousePos;
         this.playerPos;
+        this.playerVel;
 
         if (ige.isServer) {
             this.addComponent(IgeVelocityComponent);
@@ -30,6 +31,7 @@ var Projectile = IgeEntity.extend({
     setPositions: function (position, clientId) {
         this.mousePos = position;
         this.playerPos = ige.server.players[clientId].worldPosition();
+        this.playerVel = ige.server.players[clientId].velocity._velocity
         
         this.translateToPoint(this.playerPos);
         return this;

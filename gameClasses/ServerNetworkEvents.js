@@ -89,7 +89,7 @@ var ServerNetworkEvents = {
 	},
 
 	_onProjectileEntity: function (data, clientId) {
-		var projectile = new Projectile(clientId)
+		var projectile = new Projectile()
 			.streamMode(1)
 			.setPositions(data, clientId)
 			.lifeSpan(1000) // TODO: Remove when velocity = 0
