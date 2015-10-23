@@ -1,10 +1,12 @@
 var Player = IgeEntity.extend({
 	classId: 'Player',
 	
-	init: function() {
+	init: function(id) {
 		IgeEntity.prototype.init.call(this);
 		
 		var self = this;
+		
+		this.clientId = id;
 		
 		this.drawBounds(false);
 		
@@ -89,7 +91,7 @@ var Player = IgeEntity.extend({
 
 function move_player(self) {
 	
-	// Server side movement calculations
+	// Server's player movement calculations
 	if (ige.isServer) {
 		
 		// Look at mouse position
@@ -118,11 +120,12 @@ function move_player(self) {
 		self.velocity.y(y_move);
 	}
 
-	// Client side information gathering
+	// Client's player information gathering
 	if (ige.isClient) {
 		
-		// Record mouse position
-		ige.network.send('playerMousePos', ige._currentViewport.mousePosWorld());
+		// Record mouse position client side then server side to remain in sync
+		self.mousePos = ige._currentViewport.mousePosWorld();
+		ige.network.send('playerMousePos', self.mousePos);
 		
 		// Move Left
 		if (ige.input.actionState('left')) {
@@ -203,29 +206,33 @@ function move_player(self) {
 }
 	
 function fire_projectile(self) {
-	// if( ige.isServer) ige.server.log(self.states.hasFired + " " + self.elapsedTime  + " "+ self.fireCoolDown);
-	
-	if (ige.input.actionState('fire')) {
-		if (!self.states.hasFired) {
-			// Record the new state
-			self.states.hasFired = true;
-			
-			ige.network.send('projectileEntity', ige._currentViewport.mousePosWorld());
-
-			// Tell the server about our state change
-			ige.network.send('playerStateHasFired');
-		}
-	} else {
-		if (self.states.hasFired && (self.elapsedTime > self.fireCoolDown)) {
-			// Record the new state
-			self.states.hasFired = false;
-
-			// Tell the server about our control change
-			ige.network.send('playerStateCanFire');
+	if (ige.isServer) {
+		if (self.states.hasFired) {
+			ige.server._onProjectileEntity(self.mousePos, self.clientId);
 		}
 	}
 	
-	self.elapsedTime += 1;
+	if (ige.isClient) {
+		if (ige.input.actionState('fire')) {
+			if (!self.states.hasFired) {
+				// Record the new state
+				self.states.hasFired = true;
+	
+				// Tell the server about our state change
+				ige.network.send('playerStateHasFired');
+			}
+		} else {
+			if (self.states.hasFired ) {//&& (self.elapsedTime > self.fireCoolDown)) {
+				// Record the new state
+				self.states.hasFired = false;
+	
+				// Tell the server about our control change
+				ige.network.send('playerStateCanFire');
+			}
+		}
+	}
+	
+	// self.elapsedTime += 1;
 }
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Player; }

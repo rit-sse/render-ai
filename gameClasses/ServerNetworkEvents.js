@@ -98,7 +98,7 @@ var ServerNetworkEvents = {
 	
 	_onPlayerHasFired: function (data, clientId) {
 		ige.server.players[clientId].states.hasFired = true;
-		ige.server.players[clientId].elapsedTime = 0;
+		// ige.server.players[clientId].elapsedTime = 0;
 	},
 	
 	_onPlayerCanFire: function (data, clientId) {
