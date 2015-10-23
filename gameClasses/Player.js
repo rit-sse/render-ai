@@ -73,8 +73,7 @@ var Player = IgeEntity.extend({
 		move_player(this);
 
 		if (ige.input.actionState('fire')) {
-			var positions = [ ige._currentViewport.mousePosWorld(),
-							this.worldPosition() ];
+			var positions = ige._currentViewport.mousePosWorld();
 							
 			ige.network.send('projectileEntity', positions);
 		}

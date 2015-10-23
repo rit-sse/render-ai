@@ -91,7 +91,7 @@ var ServerNetworkEvents = {
 	_onProjectileEntity: function (data, clientId) {
 		var projectile = new Projectile(clientId)
 			.streamMode(1)
-			.setPositions(data)
+			.setPositions(data, clientId)
 			.lifeSpan(1000) // TODO: Remove when velocity = 0
 			.mount(ige.server.scene1);
 	},

@@ -27,9 +27,9 @@ var Projectile = IgeEntity.extend({
         }
     },
     
-    setPositions: function (position) {
-        this.mousePos = position[0];
-        this.playerPos = position[1];
+    setPositions: function (position, clientId) {
+        this.mousePos = position;
+        this.playerPos = ige.server.players[clientId].worldPosition();
         
         this.translateToPoint(this.playerPos);
         return this;
