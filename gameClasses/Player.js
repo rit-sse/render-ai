@@ -10,7 +10,7 @@ var Player = IgeEntity.extend({
 		
 		this.playerSpeed = 0.5;
 		
-		this.mousePos = ige._currentViewport.mousePos();
+		this.mousePos = ige._currentViewport.mousePosWorld();
 		
 		this.controls = {
 			left: false,
@@ -73,7 +73,10 @@ var Player = IgeEntity.extend({
 		move_player(this);
 
 		if (ige.input.actionState('fire')) {
-			ige.network.send('projectileEntity', this.mousePos);
+			var positions = [ ige._currentViewport.mousePosWorld(),
+							this.worldPosition() ];
+							
+			ige.network.send('projectileEntity', positions);
 		}
 		
 		// Call the IgeEntity (super-class) tick() method
@@ -117,7 +120,7 @@ function move_player(self) {
 	if (ige.isClient) {
 		
 		// Record mouse position
-		ige.network.send('playerMousePos', ige._currentViewport.mousePos());
+		ige.network.send('playerMousePos', ige._currentViewport.mousePosWorld());
 		
 		// Move Left
 		if (ige.input.actionState('left')) {

@@ -21,7 +21,7 @@ var Client = IgeClass.extend({
 		this.textures = {
 			ship: new IgeTexture('./assets/PlayerTexture.js'),
 			sprite: new IgeTexture('./assets/character.png'),
-			projectile: new IgeTexture('./assets/ProjectileTexture.js')
+			projectile: new IgeTexture('./assets/ProjectileTexture.js'),
 		};
 
 		ige.on('texturesLoaded', function () {

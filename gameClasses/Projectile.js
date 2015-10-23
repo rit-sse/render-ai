@@ -1,4 +1,4 @@
-var Projectile IgeEntity.extend({
+var Projectile = IgeEntity.extend({
     classId: 'Projectile',
 
     init: function() {
@@ -11,9 +11,10 @@ var Projectile IgeEntity.extend({
         //base acceleration
         this.accel = -0.01;
         //base initial velocity
-        this.initVel = 0.3;
+        this.initVel = 1.0;
 
         this.mousePos;
+        this.playerPos;
 
         if (ige.isServer) {
             this.addComponent(IgeVelocityComponent);
@@ -21,42 +22,17 @@ var Projectile IgeEntity.extend({
 
         if (ige.isClient) {
             self.texture(ige.client.textures.projectile)
-            .width(5)
-            .height(5)
+            .width(2)
+            .height(2)
         }
-
-        // Define the data sections that will be included in the stream
-        this.streamSections(['transform', 'score']);
     },
-
-    /**
-     * Override the default IgeEntity class streamSectionData() method
-     * so that we can check for the custom1 section and handle how we deal
-     * with it.
-     * @param {String} sectionId A string identifying the section to
-     * handle data get / set for.
-     * @param {*=} data If present, this is the data that has been sent
-     * from the server to the client for this entity.
-     * @return {*}
-     */
-    streamSectionData: function (sectionId, data) {
-        // Check if the section is one that we are handling
-        if (sectionId === 'score') {
-            // Check if the server sent us data, if not we are supposed
-            // to return the data instead of set it
-            if (data) {
-                // We have been given new data!
-                this._score = data;
-            } else {
-                // Return current data
-                return this._score;
-            }
-        } else {
-            // The section was not one that we handle here, so pass this
-            // to the super-class streamSectionData() method - it handles
-            // the "transform" section by itself
-            return IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
-        }
+    
+    setPositions: function (position) {
+        this.mousePos = position[0];
+        this.playerPos = position[1];
+        
+        this.translateToPoint(this.playerPos);
+        return this;
     },
 
     /**
@@ -77,16 +53,13 @@ function move_projectile(self) {
     if (ige.isServer){
 
         //Get velocity vectors based on mousePos and base initial velocity
-        var mouse_x = self.mousePos.to2d().x;
-        var mouse_y = self.mousePos.to2d().y;
+        var moveX = (self.mousePos.x - self.playerPos.x);
+        var moveY = (self.mousePos.y - self.playerPos.y);
 
-        var angleRad = Math.atan(mouse_y/mouse_x) * Math.PI / 180;
+        var angleRad = Math.atan2(moveY, moveX);
 
-        self.byAngleAndPower(angleRad, self.initVel, false);
-    }
-
-    if (ige.isClient){
-        // Record mouse position
-        ige.network.send('playerMousePos', ige._currentViewport.mousePos());
+        self.velocity.byAngleAndPower(angleRad, self.initVel, false);
     }
 }
+
+if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Projectile; }
