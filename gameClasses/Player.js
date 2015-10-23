@@ -9,6 +9,9 @@ var Player = IgeEntity.extend({
 		this.drawBounds(false);
 		
 		this.playerSpeed = 0.5;
+		this.fireCoolDown = 1;
+		
+		this.elapsedTime = 0;
 		
 		this.mousePos = ige._currentViewport.mousePosWorld();
 		
@@ -16,7 +19,11 @@ var Player = IgeEntity.extend({
 			left: false,
 			right: false,
 			up: false,
-			down: false
+			down: false,
+		};
+		
+		this.states = {
+			hasFired: false,
 		};
 		
 		if (ige.isServer) {
@@ -69,14 +76,10 @@ var Player = IgeEntity.extend({
 	 * @param ctx The canvas context to render to.
 	 */
 	tick: function (ctx) {
-		
 		move_player(this);
-
-		if (ige.input.actionState('fire')) {
-			var positions = ige._currentViewport.mousePosWorld();
-							
-			ige.network.send('projectileEntity', positions);
-		}
+		
+		
+		fire_projectile(this);
 		
 		// Call the IgeEntity (super-class) tick() method
 		IgeEntity.prototype.tick.call(this, ctx);
@@ -197,6 +200,32 @@ function move_player(self) {
 			}
 		}
 	}
+}
+	
+function fire_projectile(self) {
+	// if( ige.isServer) ige.server.log(self.states.hasFired + " " + self.elapsedTime  + " "+ self.fireCoolDown);
+	
+	if (ige.input.actionState('fire')) {
+		if (!self.states.hasFired) {
+			// Record the new state
+			self.states.hasFired = true;
+			
+			ige.network.send('projectileEntity', ige._currentViewport.mousePosWorld());
+
+			// Tell the server about our state change
+			ige.network.send('playerStateHasFired');
+		}
+	} else {
+		if (self.states.hasFired && (self.elapsedTime > self.fireCoolDown)) {
+			// Record the new state
+			self.states.hasFired = false;
+
+			// Tell the server about our control change
+			ige.network.send('playerStateCanFire');
+		}
+	}
+	
+	self.elapsedTime += 1;
 }
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Player; }

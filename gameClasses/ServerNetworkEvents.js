@@ -95,6 +95,15 @@ var ServerNetworkEvents = {
 			.lifeSpan(1000) // TODO: Remove when velocity = 0
 			.mount(ige.server.scene1);
 	},
+	
+	_onPlayerHasFired: function (data, clientId) {
+		ige.server.players[clientId].states.hasFired = true;
+		ige.server.players[clientId].elapsedTime = 0;
+	},
+	
+	_onPlayerCanFire: function (data, clientId) {
+		ige.server.players[clientId].states.hasFired = false;
+	},
 };
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = ServerNetworkEvents; }
