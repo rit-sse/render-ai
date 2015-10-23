@@ -77,7 +77,7 @@ var Client = IgeClass.extend({
 						ige.input.mapAction('right', ige.input.key.d);
 						ige.input.mapAction('up', ige.input.key.w);
 						ige.input.mapAction('down', ige.input.key.s);
-						ige.input.mapAction('shoot', ige.input.key.space)
+						ige.input.mapAction('fire', ige.input.key.space)
 
 						// Ask the server to create an entity for us
 						ige.network.send('playerEntity');

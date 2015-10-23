@@ -27,7 +27,6 @@ var Player = IgeEntity.extend({
 			self.texture(ige.client.textures.ship)
 			.width(20)
 			.height(20)
-			// .addBehaviour('mouseAim', MouseAim);
 		}
 		
 		// Define the data sections that will be included in the stream
@@ -72,6 +71,10 @@ var Player = IgeEntity.extend({
 	tick: function (ctx) {
 		
 		move_player(this);
+
+		if (ige.input.actionState('fire')) {
+			ige.network.send('projectileEntity', this.mousePos);
+		}
 		
 		// Call the IgeEntity (super-class) tick() method
 		IgeEntity.prototype.tick.call(this, ctx);

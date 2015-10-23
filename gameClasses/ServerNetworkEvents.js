@@ -86,7 +86,13 @@ var ServerNetworkEvents = {
 	
 	_setMousePos: function (data, clientId) {
 		ige.server.players[clientId].mousePos = data;
-	}
+	},
+
+	_onProjectileEntity: function (data, clientId) {
+		var projectile = new Projectile(clientId)
+			.streamMode(1)
+			.mount(ige.server.scene1);
+	},
 };
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = ServerNetworkEvents; }
