@@ -10,7 +10,7 @@ var Player = IgeEntity.extend({
 		
 		this.drawBounds(false);
 		
-		this.playerSpeed = 0.5;
+		this.playerSpeed = 0.5 / 16; // divide by 16 to account for _tickDelta
 		this.fireCoolDown = 1 * 1000;
 		
 		this.elapsedTime = 0;
@@ -101,23 +101,23 @@ function move_player(self) {
 		var y_move = 0;
 		
 		if (self.controls.left) {
-			x_move += -self.playerSpeed;
+			x_move += -self.playerSpeed * ige._tickDelta;
 		}
 
 		if (self.controls.right) {
-			x_move += self.playerSpeed;
+			x_move += self.playerSpeed * ige._tickDelta;
 		}
 		
 		if (self.controls.up) {
-			y_move += -self.playerSpeed;
+			y_move += -self.playerSpeed * ige._tickDelta;
 		}
 		
 		if (self.controls.down) {
-			y_move += self.playerSpeed;
+			y_move += self.playerSpeed * ige._tickDelta;
 		}
 		
 		self.velocity.x(x_move);
-		self.velocity.y(y_move);
+		self.velocity.y(y_move) * ige._tickDelta;
 	}
 
 	// Client's player information gathering

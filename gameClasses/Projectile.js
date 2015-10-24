@@ -11,7 +11,7 @@ var Projectile = IgeEntity.extend({
         //base acceleration
         this.accel = -0.01;
         //base initial velocity
-        this.initVel = 1.0;
+        this.initVel = 1 / 16; // divide by 16 to account for _tickDelta
 
         this.mousePos;
         this.playerPos;
@@ -31,7 +31,7 @@ var Projectile = IgeEntity.extend({
     setPositions: function (position, clientId) {
         this.mousePos = position;
         this.playerPos = ige.server.players[clientId].worldPosition();
-        this.playerVel = ige.server.players[clientId].velocity._velocity
+        this.playerVel = ige.server.players[clientId].velocity
         
         this.translateToPoint(this.playerPos);
         return this;
@@ -53,14 +53,16 @@ var Projectile = IgeEntity.extend({
 
 function move_projectile(self) {
     if (ige.isServer){
-
+        ige.network.log(
+            self.PlayerVel
+        )
         //Get velocity vectors based on mousePos and base initial velocity
         var moveX = (self.mousePos.x - self.playerPos.x);
         var moveY = (self.mousePos.y - self.playerPos.y);
 
         var angleRad = Math.atan2(moveY, moveX);
 
-        self.velocity.byAngleAndPower(angleRad, self.initVel, false);
+        self.velocity.byAngleAndPower(angleRad, self.initVel * ige._tickDelta, false);
     }
 }
 
