@@ -53,9 +53,6 @@ var Projectile = IgeEntity.extend({
 
 function move_projectile(self) {
     if (ige.isServer){
-        ige.network.log(
-            self.PlayerVel
-        )
         //Get velocity vectors based on mousePos and base initial velocity
         var moveX = (self.mousePos.x - self.playerPos.x);
         var moveY = (self.mousePos.y - self.playerPos.y);
