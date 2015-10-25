@@ -9,12 +9,12 @@ var Player = IgeEntity.extend({
 		this.clientId = id;
 		
 		this.drawBounds(false);
-		
+
 		this.playerSpeed = 0.5 / 16; // divide by 16 to account for _tickDelta
 		this.fireCoolDown = 1 * 1000;
-		
+
 		this.elapsedTime = 0;
-		
+
 		this.mousePos = ige._currentViewport.mousePosWorld();
 		
 		this.controls = {
@@ -93,31 +93,27 @@ function move_player(self) {
 	
 	// Server's player movement calculations
 	if (ige.isServer) {
-		
+
 		// Look at mouse position
 		self.rotateToPoint(self.mousePos);
-		
-		var x_move = 0;
-		var y_move = 0;
+
+		var moveX = (self.mousePos.x - ige.server.players[self.clientId].worldPosition().x);
+        var moveY = (self.mousePos.y - ige.server.players[self.clientId].worldPosition().y);
+		var angleRad = Math.atan2(moveY, moveX);
 		
 		if (self.controls.left) {
-			x_move += -self.playerSpeed * ige._tickDelta;
+			self.velocity.byAngleAndPower(angleRad - Math.radians(90), self.playerSpeed * ige._tickDelta);
 		}
-
 		if (self.controls.right) {
-			x_move += self.playerSpeed * ige._tickDelta;
+			self.velocity.byAngleAndPower(angleRad + Math.radians(90), self.playerSpeed * ige._tickDelta);
 		}
-		
 		if (self.controls.up) {
-			y_move += -self.playerSpeed * ige._tickDelta;
+			self.velocity.byAngleAndPower(angleRad, self.playerSpeed * ige._tickDelta);
 		}
-		
 		if (self.controls.down) {
-			y_move += self.playerSpeed * ige._tickDelta;
+			self.velocity.x(0);
+			self.velocity.y(0);
 		}
-		
-		self.velocity.x(x_move);
-		self.velocity.y(y_move) * ige._tickDelta;
 	}
 
 	// Client's player information gathering
