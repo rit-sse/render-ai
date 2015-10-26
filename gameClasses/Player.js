@@ -8,6 +8,8 @@ var Player = IgeEntity.extend({
 		
 		this.clientId = id;
 		
+		this.playerName;
+		
 		this.drawBounds(false);
 
 		this.playerSpeed = 3 / 16; // divide by 16 to account for _tickDelta

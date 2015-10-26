@@ -11,6 +11,12 @@ var Client = IgeClass.extend({
 		// Enable networking
 		ige.addComponent(IgeNetIoComponent);
 		
+		// Add physics and setup physics world
+		ige.addComponent(IgeBox2dComponent)
+			.box2d.sleep(true)
+			.box2d.createWorld()
+			.box2d.start();
+		
 		// Implement our game methods
 		this.implement(ClientNetworkEvents);
 
@@ -29,6 +35,9 @@ var Client = IgeClass.extend({
 			ige.start(function (success) {
 				// Check if the engine started successfully
 				if (success) {
+					
+					
+					
 					// Start the networking (you can do this elsewhere if it
 					// makes sense to connect to the server later on rather
 					// than before the scene etc are created... maybe you want
