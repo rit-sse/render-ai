@@ -9,7 +9,7 @@ var ClientNetworkEvents = {
 	 */
 	_onPlayerEntity: function (data) {
 		if (ige.$(data)) {
-			ige.client.vp1.camera.trackTranslate(ige.$(data), 50);
+			ige.client.vp1.camera.trackTranslate(ige.$(data), 5);
 
 			// Set the time stream UI entity to monitor our player entity
 			// time stream data
@@ -23,7 +23,7 @@ var ClientNetworkEvents = {
 			self._eventListener = ige.network.stream.on('entityCreated', function (entity) {
 				if (entity.id() === data) {
 					// Tell the camera to track out player entity
-					ige.client.vp1.camera.trackTranslate(ige.$(data), 50);
+					ige.client.vp1.camera.trackTranslate(ige.$(data), 5);
 
 					// Set the time stream UI entity to monitor our player entity
 					// time stream data

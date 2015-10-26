@@ -10,7 +10,8 @@ var Player = IgeEntity.extend({
 		
 		this.drawBounds(false);
 
-		this.playerSpeed = 0.5 / 16; // divide by 16 to account for _tickDelta
+		this.playerSpeed = 3 / 16; // divide by 16 to account for _tickDelta
+		this.nowSpeed = this.playerSpeed;
 		this.fireCoolDown = 1 * 1000;
 
 		this.elapsedTime = 0;
@@ -99,21 +100,22 @@ function move_player(self) {
 
 		var moveX = (self.mousePos.x - ige.server.players[self.clientId].worldPosition().x);
         var moveY = (self.mousePos.y - ige.server.players[self.clientId].worldPosition().y);
-		var angleRad = Math.atan2(moveY, moveX);
+		var angleRad = Math.degrees(Math.atan2(moveY, moveX));
 		
+		if (self.controls.up) {
+			self.velocity.linearForce(angleRad, self.playerSpeed * ige._tickDelta);
+		}
 		if (self.controls.left) {
-			self.velocity.byAngleAndPower(angleRad - Math.radians(90), self.playerSpeed * ige._tickDelta);
+			self.velocity.linearForce(angleRad - 90, self.playerSpeed * ige._tickDelta / 1.2);
 		}
 		if (self.controls.right) {
-			self.velocity.byAngleAndPower(angleRad + Math.radians(90), self.playerSpeed * ige._tickDelta);
+			self.velocity.linearForce(angleRad + 90, self.playerSpeed * ige._tickDelta / 1.2);
 		}
-		if (self.controls.up) {
-			self.velocity.byAngleAndPower(angleRad, self.playerSpeed * ige._tickDelta);
+		if (!self.controls.up && !self.controls.down && !self.controls.left && !self.controls.right) {
+			self.velocity.linearForce(angleRad, 0);
 		}
-		if (self.controls.down) {
-			self.velocity.x(0);
-			self.velocity.y(0);
-		}
+		self.velocity.friction(0.085);
+		self.velocity._applyFriction();
 	}
 
 	// Client's player information gathering

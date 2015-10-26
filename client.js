@@ -34,7 +34,7 @@ var Client = IgeClass.extend({
 					// than before the scene etc are created... maybe you want
 					// a splash screen or a menu first? Then connect after you've
 					// got a username or something?
-					ige.network.start('http://localhost:2000', function () {
+					ige.network.start('http://67.247.88.215:2000', function () {
 						// Setup the network command listeners
 						ige.network.define('playerEntity', self._onPlayerEntity); // Defined in ./gameClasses/ClientNetworkEvents.js
 
@@ -76,7 +76,7 @@ var Client = IgeClass.extend({
 						ige.input.mapAction('left', ige.input.key.a);
 						ige.input.mapAction('right', ige.input.key.d);
 						ige.input.mapAction('up', ige.input.key.w);
-						ige.input.mapAction('down', ige.input.key.s);
+						ige.input.mapAction('down', ige.input.key.space);
 						ige.input.mapAction('fire', ige.input.mouse.button1)
 
 						// Ask the server to create an entity for us
