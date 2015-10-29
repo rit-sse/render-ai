@@ -35,6 +35,7 @@ var ServerNetworkEvents = {
 	_onPlayerEntity: function (data, clientId) {
 		if (!ige.server.players[clientId]) {
 			ige.server.players[clientId] = new Player(clientId)
+				.box2dActive(true)
 				.streamMode(1)
 				.mount(ige.server.scene1);
 				
@@ -92,7 +93,9 @@ var ServerNetworkEvents = {
 		var projectile = new Projectile()
 			.streamMode(1)
 			.setPositions(data, clientId)
-			.lifeSpan(1000) // TODO: Remove when velocity = 0
+			.translateToPoint(ige.server.players[clientId].worldPosition())
+			.lifeSpan(750) // TODO: Remove when velocity = 0
+			.box2dActive(true)
 			.mount(ige.server.scene1);
 	},
 	

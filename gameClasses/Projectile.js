@@ -1,4 +1,4 @@
-var Projectile = IgeEntity.extend({
+var Projectile = IgeEntityBox2d.extend({
     classId: 'Projectile',
 
     init: function() {
@@ -31,9 +31,7 @@ var Projectile = IgeEntity.extend({
     setPositions: function (position, clientId) {
         this.mousePos = position;
         this.playerPos = ige.server.players[clientId].worldPosition();
-        this.playerVel = ige.server.players[clientId].velocity
         
-        this.translateToPoint(this.playerPos);
         return this;
     },
 
@@ -45,6 +43,10 @@ var Projectile = IgeEntity.extend({
     tick: function (ctx) {
 
         move_projectile(this);
+        
+        this.on('collisionStart', 'Player', function (contactData) {
+            ige.system.log("HIT");
+        });
 
         // Call the IgeEntity (super-class) tick() method
         IgeEntity.prototype.tick.call(this, ctx);

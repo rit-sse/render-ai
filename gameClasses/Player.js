@@ -1,4 +1,4 @@
-var Player = IgeEntity.extend({
+var Player = IgeEntityBox2d.extend({
 	classId: 'Player',
 	
 	init: function(id) {
@@ -7,8 +7,6 @@ var Player = IgeEntity.extend({
 		var self = this;
 		
 		this.clientId = id;
-		
-		this.playerName;
 		
 		this.drawBounds(false);
 
@@ -96,10 +94,10 @@ function move_player(self) {
 	
 	// Server's player movement calculations
 	if (ige.isServer) {
-
 		// Look at mouse position
 		self.rotateToPoint(self.mousePos);
 
+		// Gather the velocity and make an angle
 		var moveX = (self.mousePos.x - ige.server.players[self.clientId].worldPosition().x);
         var moveY = (self.mousePos.y - ige.server.players[self.clientId].worldPosition().y);
 		var angleRad = Math.degrees(Math.atan2(moveY, moveX));
@@ -116,14 +114,15 @@ function move_player(self) {
 		if (!self.controls.up && !self.controls.down && !self.controls.left && !self.controls.right) {
 			self.velocity.linearForce(angleRad, 0);
 		}
+		
+		// Always apply friction
 		self.velocity.friction(0.085);
 		self.velocity._applyFriction();
 	}
 
 	// Client's player information gathering
 	if (ige.isClient) {
-		
-		// Record mouse position client side then server side to remain in sync
+		// Record mouse position client side and server side to remain in sync
 		self.mousePos = ige._currentViewport.mousePosWorld();
 		ige.network.send('playerMousePos', self.mousePos);
 		
