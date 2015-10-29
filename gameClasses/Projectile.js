@@ -1,24 +1,73 @@
 var Projectile = IgeEntityBox2d.extend({
     classId: 'Projectile',
 
-    init: function() {
-        IgeEntity.prototype.init.call(this);
+    init: function(clientId) {
+        IgeEntityBox2d.prototype.init.call(this);
 
         var self = this;
-
         this.drawBounds(false);
-
-        //base acceleration
-        this.accel = -0.01;
-        //base initial velocity
-        this.initVel = 1 / 16; // divide by 16 to account for _tickDelta
-
-        this.mousePos;
-        this.playerPos;
-        this.playerVel;
-
+        
         if (ige.isServer) {
+            //base acceleration
+            this.accel = -0.01;
+            
+            //base initial velocity
+            this.initVel = 1 / 16; // divide by 16 to account for _tickDelta
+            
+            this.playerVel;
+            
             this.addComponent(IgeVelocityComponent);
+            
+            this.playerPos = ige.server.players[clientId].worldPosition();
+            this.mousePos = ige.server.players[clientId].mousePos;
+            
+            // Hacky implementation of spawning entity "far" away from player
+            var location = {
+                x: 0,
+                y: 0,
+                z: 0,
+            };
+            
+            if (this.mousePos.x - this.playerPos.x > 0) {
+                location.x = this.playerPos.x + 20;
+            } else {
+                location.x = this.playerPos.x - 20;
+            }
+            if (this.mousePos.y - this.playerPos.y > 0) {
+                location.y = this.playerPos.y + 20;
+            } else {
+                location.y = this.playerPos.y - 20;
+            }
+            
+            this.translateToPoint(location);    // End hack
+            
+            // Setup the box2d physics properties
+            self.box2dBody({
+				type: 'dynamic',
+				linearDamping: 0.0,
+				angularDamping: 0.5,
+				allowSleep: false,
+				bullet: true,
+				gravitic: false,
+				fixedRotation: false,
+				fixtures: [{
+                    density: 0.0,
+                    friction: 0.0,
+                    restitution: 0.0,
+                    // isSensor: true,
+                    filter: {
+                        categoryBits: 0x0100,
+                        maskBits: 0x0008
+                    },
+                    shape: {
+                        type: 'circle',
+                        data: {
+                            radius: 5
+                        }
+                    }
+                }]
+			});
+            
         }
 
         if (ige.isClient) {
@@ -30,8 +79,6 @@ var Projectile = IgeEntityBox2d.extend({
     
     setPositions: function (position, clientId) {
         this.mousePos = position;
-        this.playerPos = ige.server.players[clientId].worldPosition();
-        
         return this;
     },
 
@@ -43,13 +90,9 @@ var Projectile = IgeEntityBox2d.extend({
     tick: function (ctx) {
 
         move_projectile(this);
-        
-        this.on('collisionStart', 'Player', function (contactData) {
-            ige.system.log("HIT");
-        });
 
         // Call the IgeEntity (super-class) tick() method
-        IgeEntity.prototype.tick.call(this, ctx);
+        IgeEntityBox2d.prototype.tick.call(this, ctx);
     },
 });
 

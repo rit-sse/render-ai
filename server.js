@@ -62,7 +62,7 @@ var Server = IgeClass.extend({
 						// Accept incoming network connections
 						ige.network.acceptConnections(true);
 
-						// Create the scene
+						// Create the mainscene
 						self.mainScene = new IgeScene2d()
 							.id('mainScene');
 
@@ -80,6 +80,17 @@ var Server = IgeClass.extend({
 							.scene(self.mainScene)
 							.drawBounds(true)
 							.mount(ige);
+							
+						// Set the contact listener methods to detect when
+						// contacts (collisions) begin and end
+						ige.box2d.contactListener(
+							// Listen for when contact's begin
+							function (contact) {
+								contact.igeEntityA().destroy();
+								contact.igeEntityB().health -= 50;
+								ige.server.log('Contact begins between', contact.igeEntityA()._id, 'and', contact.igeEntityB()._id);
+							});
+							
 					}
 				});
 			});

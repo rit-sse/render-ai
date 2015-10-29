@@ -2,35 +2,103 @@ var Player = IgeEntityBox2d.extend({
 	classId: 'Player',
 	
 	init: function(id) {
-		IgeEntity.prototype.init.call(this);
+		IgeEntityBox2d.prototype.init.call(this);
 		
 		var self = this;
 		
-		this.clientId = id;
+		self.clientId = id;
 		
-		this.drawBounds(false);
+		self.drawBounds(false);
 
-		this.playerSpeed = 3 / 16; // divide by 16 to account for _tickDelta
-		this.nowSpeed = this.playerSpeed;
-		this.fireCoolDown = 1 * 1000;
-
-		this.elapsedTime = 0;
-
-		this.mousePos = ige._currentViewport.mousePosWorld();
+		self.elapsedTime = 0;
 		
-		this.controls = {
+		self.health = 100;
+
+		self.mousePos = ige._currentViewport.mousePosWorld();
+		
+		self.controls = {
 			left: false,
 			right: false,
 			up: false,
 			down: false,
 		};
 		
-		this.states = {
+		self.states = {
 			hasFired: false,
 		};
 		
+
+		
 		if (ige.isServer) {
-			this.addComponent(IgeVelocityComponent);
+			self.playerSpeed = 3 / 16; // divide by 16 to account for _tickDelta
+			self.nowSpeed = self.playerSpeed;
+			self.fireCoolDown = 1 * 1000;
+			
+			self.addComponent(IgeVelocityComponent);
+			
+			// Define the polygon for collision
+			var triangles,
+				fixDefs,
+				collisionPoly = new IgePoly2d()
+				.addPoint(0, -this._bounds2d.y2)
+				.addPoint(this._bounds2d.x2, this._bounds2d.y2)
+				.addPoint(0, this._bounds2d.y2 - 5)
+				.addPoint(-this._bounds2d.x2, this._bounds2d.y2);
+			// Scale the polygon by the box2d scale ratio
+			collisionPoly.divide(ige.box2d._scaleRatio);
+			// Now convert this polygon into an array of triangles
+			triangles = collisionPoly.triangulate();
+			this.triangles = triangles;
+			
+			// Create an array of box2d fixture definitions
+			// based on the triangles
+			fixDefs = [];
+	
+			for (var i = 0; i < this.triangles.length; i++) {
+				fixDefs.push({
+					density: 1.0,
+					friction: 1.0,
+					restitution: 0.2,
+					filter: {
+						categoryBits: 0x0004,
+						maskBits: 0xffff & ~0x0008
+					},
+					shape: {
+						type: 'polygon',
+						data: this.triangles[i]
+					}
+				});
+			}
+			
+			// Fixtures for box2d
+			fixDefs.push({
+				density: 0.0,
+				friction: 0.0,
+				restitution: 0.0,
+				// isSensor: true,
+				filter: {
+					categoryBits: 0x0008,
+					maskBits: 0x0100
+				},
+				shape: {
+					type: 'circle',
+					data: {
+						radius: 10
+					}
+				}
+			});
+			
+			// Setup the box2d physics properties
+			self.box2dBody({
+				type: 'dynamic',
+				linearDamping: 0.0,
+				angularDamping: 0.5,
+				allowSleep: false,
+				bullet: true,
+				gravitic: false,
+				fixedRotation: false,
+				fixtures: fixDefs
+			});
 		}
 
 		if (ige.isClient) {
@@ -40,7 +108,7 @@ var Player = IgeEntityBox2d.extend({
 		}
 		
 		// Define the data sections that will be included in the stream
-		this.streamSections(['transform', 'score']);
+		self.streamSections(['transform', 'score']);
 	},
 	
 	/**
@@ -81,11 +149,14 @@ var Player = IgeEntityBox2d.extend({
 	tick: function (ctx) {
 		move_player(this);
 		
-		
 		fire_projectile(this);
 		
+		if (this.health <= 0) {
+			this.destroy();
+		}
+		
 		// Call the IgeEntity (super-class) tick() method
-		IgeEntity.prototype.tick.call(this, ctx);
+		IgeEntityBox2d.prototype.tick.call(this, ctx);
 	},
 	
 });
