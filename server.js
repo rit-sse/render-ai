@@ -88,7 +88,6 @@ var Server = IgeClass.extend({
 							function (contact) {
 								contact.igeEntityA().destroy();
 								contact.igeEntityB().health -= 50;
-								ige.server.log('Contact begins between', contact.igeEntityA()._id, 'and', contact.igeEntityB()._id);
 							});
 							
 					}

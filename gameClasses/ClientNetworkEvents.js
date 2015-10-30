@@ -8,6 +8,7 @@ var ClientNetworkEvents = {
 	 * @private
 	 */
 	_onPlayerEntity: function (data) {
+
 		if (ige.$(data)) {
 			ige.client.vp1.camera.trackTranslate(ige.$(data), 5);
 
