@@ -103,6 +103,15 @@ var ServerNetworkEvents = {
 	_onPlayerCanFire: function (data, clientId) {
 		ige.server.players[clientId].states.hasFired = false;
 	},
+	
+	// Debug
+	_onPlayerDebugSpinPressed: function (data, clientId) {
+		ige.server.players[clientId].controls.debugSpin = true;
+	},
+	
+	_onPlayerDebugSpinReleased: function (data, clientId) {
+		ige.server.players[clientId].controls.debugSpin = false;
+	},
 };
 
 if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = ServerNetworkEvents; }

@@ -33,15 +33,19 @@ var Server = IgeClass.extend({
 						ige.network.define('projectileEntity', self._onProjectileEntity);
 						
 						// Controls
+						// Pressed
 						ige.network.define('playerControlLeftDown', self._onPlayerLeftDown);
 						ige.network.define('playerControlRightDown', self._onPlayerRightDown);
 						ige.network.define('playerControlUpDown', self._onPlayerUpDown);
 						ige.network.define('playerControlDownDown', self._onPlayerDownDown);
+						ige.network.define('playerControlDebugSpinPressed', self._onPlayerDebugSpinPressed);
 
+						// Released
 						ige.network.define('playerControlLeftUp', self._onPlayerLeftUp);
 						ige.network.define('playerControlRightUp', self._onPlayerRightUp);
 						ige.network.define('playerControlUpUp', self._onPlayerUpUp);
 						ige.network.define('playerControlDownUp', self._onPlayerDownUp);
+						ige.network.define('playerControlDebugSpinReleased', self._onPlayerDebugSpinReleased);
 						
 						// Data
 						ige.network.define('playerMousePos', self._setMousePos);

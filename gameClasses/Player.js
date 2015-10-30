@@ -21,6 +21,7 @@ var Player = IgeEntityBox2d.extend({
 			right: false,
 			up: false,
 			down: false,
+			debugSpin: false,
 		};
 		
 		self.states = {
@@ -154,7 +155,9 @@ var Player = IgeEntityBox2d.extend({
 		if (ige.isServer) {
 			move_player(this);
 			
+
 			fire_projectile(this);
+
 			
 			if (this.health <= 0) {
 				this.destroy();
@@ -169,8 +172,6 @@ var Player = IgeEntityBox2d.extend({
 
 function move_player(self) {
 	// Server's player movement calculations
-	// Look at mouse position
-	self.rotateToPoint(self.mousePos);
 	
 	// Gather the velocity and make an angle
 	var moveX = (self.mousePos.x - ige.server.players[self.clientId].worldPosition().x);
@@ -193,6 +194,18 @@ function move_player(self) {
 	// Always apply friction
 	self.velocity.friction(0.085);
 	self.velocity._applyFriction();
+	
+	if (self.controls.debugSpin) {
+		self.rotateBy(0, 0, Math.radians(0.5 * ige._tickDelta));
+		
+		if (ige.currentTime() % 5 == 0) {
+			self.states.hasFired = true;
+		}
+		fire_projectile(self);
+	} else {
+		// Look at mouse position
+		self.rotateToPoint(self.mousePos);
+	}
 }
 
 function get_controls(self) {
@@ -278,6 +291,27 @@ function get_controls(self) {
 		}
 	}
 	
+	// Spin around and shoot. For benchmarks
+	if (ige.input.actionState('debugSpin')) {
+		if (!self.controls.debugSpin) {
+			// Record the new state
+			self.controls.debugSpin = true;
+			console.log("PRESSED")
+	
+			// Tell the server about our control change
+			ige.network.send('playerControlDebugSpinPressed');
+		}
+	} 
+	// else {
+	// 	if (self.controls.debugSpin) {
+	// 		// Record the new state
+	// 		self.controls.debugSpin = false;
+	// 		console.log("RELEASED")
+	
+	// 		// Tell the server about our control change
+	// 		ige.network.send('playerControlDebugSpinReleased');
+	// 	}
+	// }
 	
 	// Handle shooting
 	if (ige.input.actionState('fire')) {
